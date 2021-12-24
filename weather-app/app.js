@@ -1,11 +1,15 @@
-console.log("Starting");
+const request = require("request");
+const geocode = require("./utils/geocode");
+const forecast = require("./utils/forecast");
 
-setTimeout(() => {
-	console.log("2 Second timer");
-}, 2000);
+geocode("Middleton New Hampshire", (error, data) => {
+	const { longitude, latitude, location } = data;
+	forecast(longitude, latitude, (error, res) => {
+		console.log(res, location);
+	});
+});
 
-setTimeout(() => {
-	console.log("0 second Timer");
-}, 0);
-
-console.log("Stopping");
+// forecast({ lat: 44.1545, long: -75.7088 }, (error, data) => {
+// 	console.log("Error", error);
+// 	console.log("Data", data);
+// });
