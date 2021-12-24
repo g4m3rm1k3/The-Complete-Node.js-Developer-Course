@@ -1,17 +1,24 @@
 const fs = require("fs");
 const chalk = require("chalk");
 
-const getNotes = function () {
-	return "Your notes...";
-};
-
-const addNote = function (title, body) {
+const readNote = (title) => {
 	const notes = loadNotes();
 	const foundNote = notes.find((note) => title === note.title);
 	if (foundNote) {
-		foundNote.body = body;
-		console.log(chalk.yellow.bold.inverse("Note updated"));
-		saveNotes(notes);
+		const { body } = foundNote;
+		console.log(`${title}: ${body}`);
+		return foundNote;
+	} else {
+		console.log(chalk.red("Note not found"));
+		return null;
+	}
+};
+
+const addNote = (title, body) => {
+	const notes = loadNotes();
+	const foundNote = readNote(title);
+	if (foundNote) {
+		console.log(chalk.red("Note already exist"));
 		return;
 	} else {
 		notes.push({ title, body });
@@ -20,7 +27,7 @@ const addNote = function (title, body) {
 	console.log(chalk.green.bold.inverse("Note added"));
 };
 
-const removeNote = function (title) {
+const removeNote = (title) => {
 	const notes = loadNotes();
 	const savedNotes = notes.filter((note) => note.title !== title);
 	const notesDiff = notes.length - savedNotes.length;
@@ -36,12 +43,25 @@ const removeNote = function (title) {
 	saveNotes(savedNotes);
 };
 
+const updateNote = (title, body) => {
+	const notes = loadNotes();
+	const noteToUpdate = notes.find((note) => title === note.title);
+	if (noteToUpdate) {
+		noteToUpdate.body = body;
+		saveNotes(notes);
+		console.log(chalk.green("Note updated"));
+	} else {
+		console.log(chalk.red("Note not found"));
+		return null;
+	}
+};
+
 const saveNotes = (notes) => {
 	const dataJSON = JSON.stringify(notes);
 	fs.writeFileSync("notes.json", dataJSON);
 };
 
-const loadNotes = function () {
+const loadNotes = () => {
 	try {
 		const dataBuffer = fs.readFileSync("notes.json");
 		const dataJSON = dataBuffer.toString();
@@ -51,8 +71,17 @@ const loadNotes = function () {
 	}
 };
 
+const listNotes = () => {
+	const notes = loadNotes();
+	notes.forEach(({ title, body }) => {
+		console.log(`title: ${title}\nBody: ${body}`);
+	});
+};
+
 module.exports = {
-	getNotes,
 	addNote,
 	removeNote,
+	listNotes,
+	readNote,
+	updateNote,
 };
