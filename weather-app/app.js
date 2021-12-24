@@ -2,14 +2,27 @@ const request = require("request");
 const geocode = require("./utils/geocode");
 const forecast = require("./utils/forecast");
 
-geocode("Middleton New Hampshire", (error, data) => {
-	const { longitude, latitude, location } = data;
-	forecast(longitude, latitude, (error, res) => {
-		console.log(res, location);
-	});
-});
+let location = "";
+for (let i = 2; i < 5; i++) {
+	if (process.argv[i]) {
+		location = location + " " + process.argv[i];
+	} else {
+		i = 5;
+	}
+}
 
-// forecast({ lat: 44.1545, long: -75.7088 }, (error, data) => {
-// 	console.log("Error", error);
-// 	console.log("Data", data);
-// });
+if (location) {
+	geocode(location, (error, data) => {
+		if (error) {
+			console.log(error);
+		} else {
+			const { longitude, latitude, location } = data;
+			console.log(longitude, latitude);
+			forecast(longitude, latitude, (error, res) => {
+				console.log(res, location);
+			});
+		}
+	});
+} else {
+	console.log("Please input a location");
+}
