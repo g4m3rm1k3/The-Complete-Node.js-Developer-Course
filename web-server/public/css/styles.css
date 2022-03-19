@@ -1,0 +1,10 @@
+h1 {
+	color: #f3f3f3;
+}
+
+img {
+	width: 250px;
+	height: 250px;
+	object-fit: cover;
+	border-radius: 70%;
+}
