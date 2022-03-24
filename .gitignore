@@ -1,8 +1,2 @@
 node_modules
-.\weather-app\node_modules
-.\playground\node_modules
-.\web-server\node_modules
-.\notes-app\node_modules
 .vscode
-
-.\web-server\.git
